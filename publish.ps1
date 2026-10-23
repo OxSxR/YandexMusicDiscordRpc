@@ -58,6 +58,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Copy-Item -Path (Join-Path $root 'README.md') -Destination $output -Force
 Copy-Item -Path (Join-Path $root 'LICENSE') -Destination $output -Force
+Copy-Item -Path (Join-Path $root 'THIRD-PARTY-NOTICES.md') -Destination $output -Force
 
 $executable = Join-Path $output 'YandexMusicRPC.exe'
 if (-not (Test-Path $executable)) {
