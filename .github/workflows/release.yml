@@ -4,9 +4,18 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to upload the asset to'
+        required: true
+        default: 'v1.0.0'
+        type: string
 
 permissions:
   contents: write
+
+env:
+  RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
 
 jobs:
   build:
@@ -15,6 +24,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || 'main' }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -25,22 +36,36 @@ jobs:
         shell: pwsh
         run: ./publish.ps1 -Runtime win-x64
 
+      - name: Verify distribution files
+        shell: pwsh
+        run: |
+          $required = @('README.md', 'LICENSE', 'THIRD-PARTY-NOTICES.md', 'YandexMusicRPC.exe')
+          foreach ($name in $required) {
+            $path = Join-Path 'dist/win-x64' $name
+            if (-not (Test-Path -LiteralPath $path)) {
+              throw "Missing required file: $path"
+            }
+          }
+
       - name: Create release archive
         shell: pwsh
         run: |
-          $version = "${{ github.event.release.tag_name }}"
+          $version = "$env:RELEASE_TAG"
           if ([string]::IsNullOrWhiteSpace($version)) {
             $version = "v1.0.0"
           }
           Compress-Archive -Path dist/win-x64/* -DestinationPath "YandexMusicRPC-$version-win-x64.zip" -Force
 
       - name: Upload release asset
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
         shell: pwsh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $version = "${{ github.event.release.tag_name }}"
+          $version = "$env:RELEASE_TAG"
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            $version = "v1.0.0"
+          }
           gh release upload $version "YandexMusicRPC-$version-win-x64.zip" --clobber
 
       - name: Upload workflow artifact
