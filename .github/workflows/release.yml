@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish application
+        shell: pwsh
+        run: ./publish.ps1 -Runtime win-x64
+
+      - name: Create release archive
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.release.tag_name }}"
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            $version = "v1.0.0"
+          }
+          Compress-Archive -Path dist/win-x64/* -DestinationPath "YandexMusicRPC-$version-win-x64.zip" -Force
+
+      - name: Upload release asset
+        if: github.event_name == 'release'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $version = "${{ github.event.release.tag_name }}"
+          gh release upload $version "YandexMusicRPC-$version-win-x64.zip" --clobber
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: YandexMusicRPC-win-x64
+          path: YandexMusicRPC-*-win-x64.zip
+          if-no-files-found: error
