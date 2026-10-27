@@ -1,8 +1,6 @@
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Navigation;
 using YandexMusicDiscordRpc.Models;
 using YandexMusicDiscordRpc.ViewModels;
 
@@ -60,20 +58,6 @@ public partial class SettingsWindow : Window
         {
             // Игнорируем: кнопка мыши могла быть уже отпущена.
         }
-    }
-
-    private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
-    {
-        try
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-        }
-        catch
-        {
-            // Открытие браузера не критично.
-        }
-
-        e.Handled = true;
     }
 
     private static T? FindAncestor<T>(DependencyObject? current) where T : DependencyObject
