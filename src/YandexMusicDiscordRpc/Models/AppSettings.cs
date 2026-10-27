@@ -55,11 +55,8 @@ public sealed class AppSettings
         if (!Enum.IsDefined(StatusDisplay))
             StatusDisplay = StatusDisplayPreference.TrackName;
 
-        var clientId = (DiscordClientId ?? string.Empty).Trim();
-        if (!IsValidDiscordClientId(clientId))
-            clientId = AppConstants.DefaultDiscordClientId;
-
-        DiscordClientId = clientId;
+        EnableRichPresence = true;
+        DiscordClientId = AppConstants.DefaultDiscordClientId;
         Version = 1;
     }
 
