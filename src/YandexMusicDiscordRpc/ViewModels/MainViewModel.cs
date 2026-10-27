@@ -490,7 +490,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     private static string GetVersion()
     {
-        return Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+        return Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.2";
     }
 
     private void CancelCoverLoad()
