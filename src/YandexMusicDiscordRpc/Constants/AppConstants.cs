@@ -13,7 +13,7 @@ public static class AppConstants
     public const string YandexMusicBaseUrl = "https://music.yandex.ru";
     public const string YandexMusicApiBaseUrl = "https://api.music.yandex.net";
     public const string YandexMusicClientHeader = "YandexMusicDesktopAppWindows/5.123.4";
-    public const string UserAgent = "YandexMusicRPC/1.0 (Windows; Discord Rich Presence)";
+    public const string UserAgent = "YandexMusicRPC/1.0.2 (Windows; Discord Rich Presence)";
 
     public const string DataFolderName = "YandexMusicDiscordRpc";
     public const string RunRegistryValueName = "YandexMusicDiscordRpc";
