@@ -142,26 +142,7 @@
                                Margin="2,22,0,8" />
                     <Border Style="{StaticResource CardStyle}">
                         <StackPanel>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <StackPanel>
-                                    <TextBlock Text="Включить Rich Presence"
-                                               Style="{StaticResource SettingTitleStyle}" />
-                                    <TextBlock Text="Показывать текущий трек в профиле Discord."
-                                               Style="{StaticResource SettingDescriptionStyle}" />
-                                </StackPanel>
-                                <CheckBox Grid.Column="1"
-                                          Style="{StaticResource ToggleSwitchStyle}"
-                                          IsChecked="{Binding EnableRichPresence}"
-                                          Margin="18,0,0,0" />
-                            </Grid>
-
-                            <Border Style="{StaticResource SeparatorLineStyle}" />
-
-                            <StackPanel IsEnabled="{Binding EnableRichPresence}">
+                            <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -227,7 +208,7 @@
                                     <StackPanel>
                                         <TextBlock Text="Название трека в статусе"
                                                    Style="{StaticResource SettingTitleStyle}" />
-                                        <TextBlock Text="Показывать в строке статуса название песни вместо «Яндекс Музыка»."
+                                        <TextBlock Text="Показывать в строке статуса «Исполнитель - Название трека» вместо «Яндекс Музыка»."
                                                    Style="{StaticResource SettingDescriptionStyle}" />
                                     </StackPanel>
                                     <CheckBox Grid.Column="1"
@@ -236,45 +217,6 @@
                                               Margin="18,0,0,0" />
                                 </Grid>
                             </StackPanel>
-
-                            <Border Style="{StaticResource SeparatorLineStyle}" />
-
-                            <TextBlock Text="Discord Application ID"
-                                       Style="{StaticResource SettingTitleStyle}" />
-                            <TextBlock Text="По умолчанию используется публичное приложение «Яндекс Музыка». Можно указать собственное."
-                                       Style="{StaticResource SettingDescriptionStyle}"
-                                       Margin="0,4,0,9" />
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0"
-                                         Style="{StaticResource DarkTextBoxStyle}"
-                                         Text="{Binding DiscordClientId, UpdateSourceTrigger=PropertyChanged}"
-                                         VerticalContentAlignment="Center" />
-                                <Button Grid.Column="1"
-                                        Style="{StaticResource LinkButtonStyle}"
-                                        Command="{Binding UseDefaultClientIdCommand}"
-                                        Content="Сбросить"
-                                        Margin="9,0,0,0"
-                                        VerticalAlignment="Center" />
-                            </Grid>
-
-                            <TextBlock Margin="0,8,0,0" FontSize="11" Foreground="{StaticResource TextMutedBrush}">
-                                <Hyperlink Foreground="{StaticResource AccentBrush}"
-                                           TextDecorations="None"
-                                           NavigateUri="https://discord.com/developers/applications"
-                                           RequestNavigate="Hyperlink_OnRequestNavigate">Где взять Application ID?</Hyperlink>
-                            </TextBlock>
-
-                            <TextBlock Text="{Binding ValidationMessage}"
-                                       FontSize="11"
-                                       Foreground="{StaticResource DangerBrush}"
-                                       TextWrapping="Wrap"
-                                       Margin="0,8,0,0"
-                                       Visibility="{Binding HasValidationMessage, Converter={StaticResource BoolToVisibility}}" />
                         </StackPanel>
                     </Border>
 
