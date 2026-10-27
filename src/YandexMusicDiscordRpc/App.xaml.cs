@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Threading;
 using YandexMusicDiscordRpc.Constants;
 using YandexMusicDiscordRpc.Models;
@@ -87,8 +87,7 @@ public partial class App : System.Windows.Application
             _coordinator.TrackMetadataUpdated += Coordinator_OnTrackMetadataUpdated;
             _discord.StatusChanged += Discord_OnStatusChanged;
 
-            _mainViewModel.ApplyDiscordStatus(
-                _settings.EnableRichPresence ? DiscordStatus.Connecting : DiscordStatus.Disabled);
+            _mainViewModel.ApplyDiscordStatus(DiscordStatus.Connecting);
 
             _coordinator.Start();
             _started = true;
@@ -437,6 +436,6 @@ public partial class App : System.Windows.Application
 
     private static string GetVersion()
     {
-        return typeof(App).Assembly.GetName().Version?.ToString(3) ?? "1.0.0";
+        return typeof(App).Assembly.GetName().Version?.ToString(3) ?? "1.0.2";
     }
 }
