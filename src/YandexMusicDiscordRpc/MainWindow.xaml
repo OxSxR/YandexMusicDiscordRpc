@@ -1,4 +1,4 @@
-﻿<Window x:Class="YandexMusicDiscordRpc.MainWindow"
+<Window x:Class="YandexMusicDiscordRpc.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -65,15 +65,9 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center">
                         <Button Style="{StaticResource IconButtonStyle}"
-                                Command="{Binding OpenSettingsCommand}"
-                                ToolTip="Настройки">
-                            <TextBlock Text="⚙" FontFamily="{StaticResource SymbolFont}" FontSize="16" />
-                        </Button>
-                        <Button Style="{StaticResource IconButtonStyle}"
-                                Margin="2,0,0,0"
                                 Click="Minimize_OnClick"
                                 ToolTip="Свернуть">
-                            <TextBlock Text="—" FontFamily="{StaticResource SymbolFont}" FontSize="16" />
+                            <TextBlock Text="−" FontFamily="{StaticResource SymbolFont}" FontSize="16" />
                         </Button>
                         <Button Style="{StaticResource IconButtonStyle}"
                                 Margin="2,0,0,0"
