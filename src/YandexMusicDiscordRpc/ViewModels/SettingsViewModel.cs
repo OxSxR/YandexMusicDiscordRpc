@@ -9,15 +9,12 @@ public sealed class SettingsViewModel : ObservableObject
     private bool _startWithWindows;
     private bool _minimizeToTray;
     private bool _startMinimized;
-    private bool _enableRichPresence;
     private bool _showCover;
     private bool _showProgress;
     private bool _showButtons;
     private bool _enrichFromCatalog;
-    private string _discordClientId;
     private SourcePreference _sourcePreference;
     private StatusDisplayPreference _statusDisplay;
-    private string? _validationMessage;
 
     public SettingsViewModel(AppSettings settings)
     {
@@ -25,23 +22,14 @@ public sealed class SettingsViewModel : ObservableObject
         _startWithWindows = settings.StartWithWindows;
         _minimizeToTray = settings.MinimizeToTray;
         _startMinimized = settings.StartMinimized;
-        _enableRichPresence = settings.EnableRichPresence;
         _showCover = settings.ShowCover;
         _showProgress = settings.ShowProgress;
         _showButtons = settings.ShowButtons;
         _enrichFromCatalog = settings.EnrichFromCatalog;
-        _discordClientId = settings.DiscordClientId;
         _sourcePreference = settings.SourcePreference;
         _statusDisplay = settings.StatusDisplay;
-
-        UseDefaultClientIdCommand = new RelayCommand(() =>
-        {
-            DiscordClientId = AppConstants.DefaultDiscordClientId;
-            ValidationMessage = null;
-        });
     }
 
-    public RelayCommand UseDefaultClientIdCommand { get; }
     public string VersionText { get; } = $"Версия {GetVersion()}";
 
     public bool StartWithWindows
@@ -67,12 +55,6 @@ public sealed class SettingsViewModel : ObservableObject
     }
 
     public bool StartMinimizedEnabled => MinimizeToTray;
-
-    public bool EnableRichPresence
-    {
-        get => _enableRichPresence;
-        set => SetProperty(ref _enableRichPresence, value);
-    }
 
     public bool ShowCover
     {
@@ -116,16 +98,6 @@ public sealed class SettingsViewModel : ObservableObject
         set => StatusDisplay = value
             ? StatusDisplayPreference.TrackName
             : StatusDisplayPreference.ApplicationName;
-    }
-
-    public string DiscordClientId
-    {
-        get => _discordClientId;
-        set
-        {
-            if (SetProperty(ref _discordClientId, value))
-                ValidationMessage = null;
-        }
     }
 
     public SourcePreference SourcePreference
@@ -172,46 +144,27 @@ public sealed class SettingsViewModel : ObservableObject
         }
     }
 
-    public string? ValidationMessage
-    {
-        get => _validationMessage;
-        private set
-        {
-            if (SetProperty(ref _validationMessage, value))
-                RaisePropertyChanged(nameof(HasValidationMessage));
-        }
-    }
-
-    public bool HasValidationMessage => !string.IsNullOrWhiteSpace(ValidationMessage);
-
     public bool TryCreateSettings(out AppSettings settings)
     {
         settings = _original.Clone();
         settings.StartWithWindows = StartWithWindows;
         settings.MinimizeToTray = MinimizeToTray;
         settings.StartMinimized = MinimizeToTray && StartMinimized;
-        settings.EnableRichPresence = EnableRichPresence;
+        settings.EnableRichPresence = true;
         settings.ShowCover = ShowCover;
         settings.ShowProgress = ShowProgress;
         settings.ShowButtons = ShowButtons;
         settings.StatusDisplay = StatusDisplay;
         settings.EnrichFromCatalog = EnrichFromCatalog;
-        settings.DiscordClientId = DiscordClientId.Trim();
+        settings.DiscordClientId = AppConstants.DefaultDiscordClientId;
         settings.SourcePreference = SourcePreference;
 
-        if (!AppSettings.IsValidDiscordClientId(settings.DiscordClientId))
-        {
-            ValidationMessage = "Discord Application ID должен состоять только из цифр (15–22 символа).";
-            return false;
-        }
-
         settings.Normalize();
-        ValidationMessage = null;
         return true;
     }
 
     private static string GetVersion()
     {
-        return typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? "1.0.0";
+        return typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? "1.0.2";
     }
 }
