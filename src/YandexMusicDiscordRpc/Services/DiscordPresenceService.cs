@@ -376,10 +376,11 @@ public sealed class DiscordPresenceService : IAsyncDisposable
         AppSettings settings,
         DateTimeOffset now)
     {
-        var details = FitText(track.Title, "Яндекс Музыка");
-        var state = FitText(
-            string.IsNullOrWhiteSpace(track.Artist) ? AppConstants.DiscordApplicationName : track.Artist,
-            AppConstants.DiscordApplicationName);
+        var details = BuildTrackStatus(track);
+        var album = Sanitize(track.Album);
+        var state = album.Length == 0
+            ? null
+            : FitText(album, AppConstants.DiscordApplicationName);
 
         var presence = new RichPresence
         {
@@ -390,7 +391,7 @@ public sealed class DiscordPresenceService : IAsyncDisposable
             Details = details,
             State = state,
             DetailsUrl = SafeUrl(track.TrackUrl, 256),
-            StateUrl = SafeUrl(track.ArtistUrl, 256),
+            StateUrl = state is null ? null : SafeUrl(track.AlbumUrl, 256),
             Buttons = settings.ShowButtons ? BuildButtons(track) : null,
             Assets = settings.ShowCover ? BuildAssets(track) : null
         };
@@ -472,6 +473,33 @@ public sealed class DiscordPresenceService : IAsyncDisposable
         }
 
         return buttons.Count == 0 ? null : buttons.ToArray();
+    }
+
+    private static string BuildTrackStatus(TrackInfo track)
+    {
+        var artist = Sanitize(track.Artist);
+        var title = Sanitize(track.Title);
+
+        if (artist.Length == 0)
+            return FitText(title, AppConstants.DiscordApplicationName);
+
+        if (title.Length == 0)
+            return FitText(artist, AppConstants.DiscordApplicationName);
+
+        const string separator = " - ";
+        var available = AppConstants.MaxPresenceTextLength - separator.Length;
+        if (available < 2)
+            return FitText($"{artist}{separator}{title}", AppConstants.DiscordApplicationName);
+
+        // Если строка не помещается, сохраняем видимую часть исполнителя и названия.
+        var artistBudget = Math.Min(artist.Length, Math.Max(1, available / 2));
+        var titleBudget = Math.Min(title.Length, available - artistBudget);
+        artistBudget = Math.Min(artist.Length, available - titleBudget);
+
+        var artistPart = artist[..artistBudget].TrimEnd();
+        var titlePart = title[..titleBudget].TrimEnd();
+
+        return $"{artistPart}{separator}{titlePart}";
     }
 
     private static string FitText(string? value, string fallback)
